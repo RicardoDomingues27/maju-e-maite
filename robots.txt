@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ricardodomingues27.github.io/maju-e-maite/sitemap.xml
