@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maju e Maitê – Músicas Infantis</title>
+<meta name="description" content="Músicas infantis animadas da Maju e da Maitê: todos os vídeos, playlists e novidades do canal no YouTube.">
+<meta property="og:title" content="Maju e Maitê – Músicas Infantis">
+<meta property="og:description" content="Músicas infantis animadas para cantar e brincar junto. Veja todos os vídeos!">
+<meta property="og:image" content="img/ep5.jpg">
+<style>
+:root{--rosa:#ff6fa8;--rosa2:#ffd3e4;--lilas:#9b6bff;--lilas2:#e8dcff;--amarelo:#ffd84d;--azul:#6fd3ff;--tinta:#3a2a5c;--fundo:#fff7fb;--card:#fff}
+@media (prefers-color-scheme:dark){:root{--fundo:#251a3d;--card:#33264f;--tinta:#fff2fb;--rosa2:#5b2a49;--lilas2:#3f2f6b}}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:var(--fundo);color:var(--tinta);line-height:1.45}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+header{background:linear-gradient(160deg,var(--rosa) 0%,var(--lilas) 100%);color:#fff;text-align:center;padding:28px 16px 70px;position:relative;overflow:hidden}
+header:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:46px;background:var(--fundo);border-radius:50% 50% 0 0/100% 100% 0 0}
+.hero{display:flex;justify-content:center;align-items:flex-end;gap:10px;height:210px}
+.hero img{height:100%;width:auto;filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
+.hero img.m2{height:78%}
+h1{margin:10px 0 4px;font-size:clamp(30px,8vw,52px);letter-spacing:.5px;text-shadow:0 3px 0 rgba(0,0,0,.18)}
+.sub{margin:0 auto;max-width:520px;font-size:18px}
+.btn{display:inline-block;margin-top:18px;background:#ff0033;color:#fff;font-weight:700;font-size:20px;padding:14px 26px;border-radius:999px;text-decoration:none;box-shadow:0 5px 0 #b3001f}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #b3001f}
+.btn.alt{background:#fff;color:var(--lilas);box-shadow:0 5px 0 rgba(0,0,0,.15);font-size:17px;margin-left:6px}
+section{padding:28px 0 6px}
+h2{font-size:28px;margin:0 0 14px;display:flex;gap:8px;align-items:center}
+h2 small{font-size:15px;font-weight:400;opacity:.75}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.card{background:var(--card);border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(155,107,255,.18);text-decoration:none;color:inherit;display:block;transition:transform .15s}
+.card:hover{transform:translateY(-4px) rotate(-.6deg)}
+.thumb{position:relative;aspect-ratio:16/9;background:var(--lilas2)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.play{position:absolute;inset:0;display:grid;place-items:center}
+.play span{width:62px;height:62px;border-radius:50%;background:rgba(255,0,51,.92);display:grid;place-items:center;color:#fff;font-size:26px;padding-left:5px;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.tag{position:absolute;top:10px;left:10px;background:var(--amarelo);color:#4a3600;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px}
+.info{padding:12px 14px 16px}
+.info b{display:block;font-size:18px}
+.info span{font-size:14px;opacity:.8}
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{background:var(--lilas2);color:var(--tinta);text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:700}
+.pill:hover{background:var(--rosa2)}
+.sobre{background:var(--card);border-radius:20px;padding:20px;box-shadow:0 6px 18px rgba(155,107,255,.14)}
+.sobre p{margin:0 0 10px}
+.pais{font-size:14px;opacity:.85}
+footer{text-align:center;padding:30px 16px 40px;font-size:14px;opacity:.8}
+</style>
+</head>
+<body>
+<header>
+  <div class="hero"><img src="img/maju.png" alt="Maju" onerror="this.style.display='none'"><img class="m2" src="img/maite.png" alt="Maitê" onerror="this.style.display='none'"></div>
+  <h1>Maju &amp; Maitê</h1>
+  <p class="sub">Músicas e desenhos animados para cantar, dançar e aprender brincando! 🎵💗</p>
+  <a class="btn" href="https://www.youtube.com/@MajueMaite?sub_confirmation=1" target="_blank" rel="noopener">▶ Inscreva-se no canal</a>
+  <a class="btn alt" href="https://www.youtube.com/@MajueMaite" target="_blank" rel="noopener">Ver o canal</a>
+</header>
+
+<main class="wrap">
+  <section id="novo">
+    <h2>⭐ Novidade <small>o episódio mais recente</small></h2>
+    <div class="grid" id="novidade"></div>
+  </section>
+
+  <section>
+    <h2>🎬 Todos os vídeos</h2>
+    <div class="grid" id="videos"></div>
+  </section>
+
+  <section>
+    <h2>📱 Shorts</h2>
+    <div class="pills" id="shorts"></div>
+  </section>
+
+  <section>
+    <h2>📂 Playlists</h2>
+    <div class="pills">
+      <a class="pill" href="https://www.youtube.com/@MajueMaite/playlists" target="_blank" rel="noopener">💗 Músicas Infantis da Maju e Maitê</a>
+      <a class="pill" href="https://www.youtube.com/@MajueMaite/videos" target="_blank" rel="noopener">🎥 Todos os vídeos no YouTube</a>
+      <a class="pill" href="https://www.youtube.com/@MajueMaite/shorts" target="_blank" rel="noopener">📱 Todos os Shorts</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>🛍️ Lojinha da Maju e Maitê <small>para os papais</small></h2>
+    <div class="grid" id="loja"></div>
+  </section>
+
+  <section>
+    <h2>👋 Quem somos</h2>
+    <div class="sobre">
+      <p><b>Maju</b> (6 anos) e <b>Maitê</b> (2 anos e meio) são irmãs que descobrem o mundo cantando. Cada episódio traz uma musiquinha animada com uma lição gostosa: esperar a vez, arrumar os brinquedos, lavar o pé, ser corajoso no karatê e muito mais.</p>
+      <p>Feito para bebês e crianças pequenas assistirem com a família.</p>
+      <p class="pais">Para pais e responsáveis: conteúdo para crianças, criado com ajuda de inteligência artificial.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Maju &amp; Maitê · <a href="https://www.youtube.com/@MajueMaite" style="color:inherit">youtube.com/@MajueMaite</a>
+</footer>
+
+<script>
+/* PARA ADICIONAR UM VÍDEO NOVO: copie uma linha da lista VIDEOS (o mais novo vai no topo)
+   e a imagem da capa em img/. Para um Short novo: adicione na lista SHORTS. */
+const VIDEOS = [
+  {id:"E0ExFR3doBc", titulo:"Maju e Maitê no Karatê do Jacaré", sub:"Música Infantil Animada", img:"img/ep5.jpg", data:"20/11/2026", novo:true},
+  {id:"Q_ljU_lY6dg", titulo:"O Sapo Não Lava o Pé", sub:"Sapinho Cheiroso", img:"img/ep4.jpg", data:"20/11/2026"},
+  {id:"n2DOlX83KMU", titulo:"Cada Coisa no Seu Lugar", sub:"Hora de Arrumar", img:"img/ep3.jpg", data:"20/11/2026"},
+  {id:"BiVjAUYN82g", titulo:"Um, Dois, Três", sub:"Esperar a Vez", img:"img/ep2.jpg", data:"18/11/2026"},
+  {id:"R6IiLxc19DE", titulo:"Vamos Compartilhar", sub:"Música Infantil", img:"https://i.ytimg.com/vi/R6IiLxc19DE/hqdefault.jpg", data:"16/11/2026"}
+];
+const SHORTS = [
+  /* {titulo:"Karatê do Jacaré", url:"https://youtube.com/shorts/XXXX"} */
+];
+/* LOJINHA: quando houver produtos, adicione aqui. loja = "Mercado Livre" ou "Shopee".
+   Ex.: {nome:"Pelúcia da Maju", loja:"Mercado Livre", url:"https://...", img:"img/produto1.jpg", preco:"R$ 49,90"} */
+const PRODUTOS = [];
+const prod = p => `<a class="card" href="${p.url}" target="_blank" rel="noopener sponsored">
+  <div class="thumb"><img loading="lazy" src="${p.img}" alt="${p.nome}"></div>
+  <div class="info"><b>${p.nome}</b><span>${p.preco||''} · ${p.loja}</span></div></a>`;
+document.getElementById('loja').innerHTML = PRODUTOS.length ? PRODUTOS.map(prod).join('')
+  : '<div class="sobre" style="grid-column:1/-1;text-align:center"><b>Em breve! 🎁</b><p style="margin:6px 0 0">Bonecas, livrinhos e brinquedos da Maju e da Maitê, com link direto para o Mercado Livre e a Shopee.</p></div>';
+const card = v => `<a class="card" href="https://youtu.be/${v.id}" target="_blank" rel="noopener">
+  <div class="thumb"><img loading="lazy" src="${v.img}" alt="${v.titulo}">${v.novo?'<span class="tag">NOVO!</span>':''}<div class="play"><span>▶</span></div></div>
+  <div class="info"><b>${v.titulo}</b><span>${v.sub} · ${v.data}</span></div></a>`;
+document.getElementById('novidade').innerHTML = card(VIDEOS[0]);
+document.getElementById('videos').innerHTML = VIDEOS.map(card).join('');
+const sh = document.getElementById('shorts');
+sh.innerHTML = SHORTS.length ? SHORTS.map(s=>`<a class="pill" href="${s.url}" target="_blank" rel="noopener">▶ ${s.titulo}</a>`).join('')
+  : '<a class="pill" href="https://www.youtube.com/@MajueMaite/shorts" target="_blank" rel="noopener">📱 Ver Shorts no YouTube</a>';
+</script>
+</body>
+</html>
