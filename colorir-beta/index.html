@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; form-action 'none'; base-uri 'none'">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1E88FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Colorir e Desenhar</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Tela inicial -->
+<main id="home" class="screen">
+  <div class="deco" aria-hidden="true"><span>🐥</span><span>🐮</span><span>🐷</span><span>🌻</span><span>🐑</span></div>
+  <button class="big" id="goDraw" aria-label="Desenhar"><span class="ico">🖍️</span><span class="lbl">Desenhar</span></button>
+  <button class="big alt" id="goColor" aria-label="Colorir"><span class="ico">🎨</span><span class="lbl">Colorir</span></button>
+</main>
+
+<!-- Escolher desenho -->
+<main id="gallery" class="screen" hidden>
+  <button class="btn back" id="galBack" aria-label="Voltar">⬅️</button>
+  <div id="grid" class="grid"></div>
+</main>
+
+<!-- Editor -->
+<main id="editor" class="screen" hidden>
+  <div id="tools" class="bar tools">
+    <button class="btn" id="bBack" aria-label="Voltar">⬅️</button>
+    <button class="btn tool" id="bBrush" aria-label="Pincel">🖌️</button>
+    <button class="btn tool" id="bBucket" aria-label="Balde de tinta">🪣</button>
+    <button class="btn tool" id="bEraser" aria-label="Borracha">🧽</button>
+    <button class="btn" id="bSize" aria-label="Tamanho do pincel"><i id="sizeDot"></i></button>
+    <button class="btn" id="bUndo" aria-label="Desfazer">↩️</button>
+    <button class="btn" id="bClear" aria-label="Limpar tudo">🗑️</button>
+    <button class="btn" id="bSave" aria-label="Salvar imagem">💾</button>
+    <button class="btn" id="bSound" aria-label="Som">🔊</button>
+  </div>
+  <div id="area" class="area">
+    <div id="stage" class="stage">
+      <canvas id="paint" width="1200" height="900"></canvas>
+      <canvas id="lines" width="1200" height="900"></canvas>
+    </div>
+  </div>
+  <div id="palette" class="bar palette"></div>
+  <div id="toast" class="toast" hidden>✅</div>
+</main>
+
+<script src="pages.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
