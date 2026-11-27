@@ -70,6 +70,7 @@
     });
     swWrap.appendChild(b);
   });
+  if (LAYOUT === 'a') $('strip').appendChild(swWrap);   // v2a: cores na mesma faixa rolante
   var swatches = swWrap.children;
   var toolBtns = Array.prototype.slice.call(document.querySelectorAll('[data-tool]'));
   var sizeBtns = Array.prototype.slice.call(document.querySelectorAll('.size'));
@@ -139,7 +140,7 @@
 
   // o quadro de desenho tem o formato da área livre da tela (celular em pé, deitado, tablet)
   function dimsFor() {
-    var aw = window.innerWidth - 8 - (LAYOUT === 'b' ? 86 : 0), ah = window.innerHeight - 8 - (LAYOUT === 'a' ? 78 : 0);
+    var aw = window.innerWidth - 8 - (LAYOUT === 'b' ? 172 : 0), ah = window.innerHeight - 8 - (LAYOUT === 'a' ? 78 : 0);
     var r = aw / ah, w, h;
     if (r >= 1) { h = 900; w = Math.max(1200, Math.min(2600, Math.round(900 * r))); }
     else { w = 900; h = Math.max(1200, Math.min(2600, Math.round(900 / r))); }

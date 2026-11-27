@@ -79,7 +79,9 @@ html, body {
 }
 .strip::-webkit-scrollbar { display: none; }
 .strip > * { flex: none; }
-.swatches { display: contents; }
+.colors { display: flex; gap: 8px; align-items: center; }
+.colors .sw { flex: none; }
+[data-layout="a"] .colors { display: contents; }
 .sep { width: 6px; height: 40px; border-radius: 3px; background: rgba(0,0,0,.15); margin: 0 2px; }
 .sw {
   width: var(--btn); height: var(--btn); border-radius: 50%; border: 5px solid #fff; padding: 0; cursor: pointer;
@@ -94,7 +96,11 @@ html, body {
 
 /* versão B: faixa vertical fina na lateral */
 [data-layout="b"] #editor { flex-direction: row-reverse; }
-[data-layout="b"] .bar { width: calc(var(--btn) + 22px); height: 100%; }
+[data-layout="b"] .bar { display: flex; flex-direction: row; height: 100%; }
+[data-layout="b"] #sepColors { display: none; }
+[data-layout="b"] .colors { flex-direction: column; padding: 7px; height: 100%; overflow-y: auto; overflow-x: hidden; touch-action: pan-y; scrollbar-width: none; background: rgba(30,136,255,.12); }
+[data-layout="b"] .colors::-webkit-scrollbar { display: none; }
+[data-layout="b"] .strip { flex: none; }
 [data-layout="b"] .strip { flex-direction: column; overflow-x: hidden; overflow-y: auto; touch-action: pan-y; height: 100%; }
 [data-layout="b"] .sep { width: 40px; height: 6px; margin: 2px 0; }
 [data-layout="b"] .handle { left: max(10px, env(safe-area-inset-left)); top: max(10px, env(safe-area-inset-top)); }
