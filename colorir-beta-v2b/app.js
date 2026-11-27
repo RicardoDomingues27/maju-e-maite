@@ -24,7 +24,10 @@
   var pctx = paint.getContext('2d', { willReadFrequently: true });
   var tctx = tmp.getContext('2d');
   var lctx = lines.getContext('2d');
-  function setDims(w, h) { W = w; H = h; [paint, tmp, lines].forEach(function (c) { c.width = w; c.height = h; }); }
+  var scratch = document.createElement('canvas'), maskCv = document.createElement('canvas');
+  var sctx = scratch.getContext('2d'), mctx = maskCv.getContext('2d', { willReadFrequently: true });
+  var labels = null, maskImg = null, dc = null, clipOn = false;
+  function setDims(w, h) { W = w; H = h; [paint, tmp, lines, scratch, maskCv].forEach(function (c) { c.width = w; c.height = h; }); maskImg = null; labels = null; }
   setDims(1200, 900);
 
   var mode = 'draw', tool = 'pencil', lastTool = 'pencil', colorIdx = 0, sizeIdx = 1, muted = false;
@@ -173,6 +176,17 @@
     var r = paint.getBoundingClientRect();
     return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * H / r.height];
   }
+  function flushClip(x0, y0, x1, y1) {
+    if (!clipOn) return;
+    var p = SIZES[sizeIdx] * 3 + 6;
+    var bx = Math.max(0, Math.floor(Math.min(x0, x1) - p)), by = Math.max(0, Math.floor(Math.min(y0, y1) - p));
+    var bw = Math.min(W, Math.ceil(Math.max(x0, x1) + p)) - bx, bh = Math.min(H, Math.ceil(Math.max(y0, y1) + p)) - by;
+    if (bw <= 0 || bh <= 0) return;
+    var c = tool === 'marker' ? tctx : sctx;
+    c.globalCompositeOperation = 'destination-in'; c.drawImage(maskCv, bx, by, bw, bh, bx, by, bw, bh);
+    c.globalCompositeOperation = 'source-over';
+    if (tool !== 'marker') { pctx.drawImage(scratch, bx, by, bw, bh, bx, by, bw, bh); sctx.clearRect(bx, by, bw, bh); }
+  }
   function setup(c, comp) {
     c.globalCompositeOperation = comp || 'source-over';
     c.strokeStyle = c.fillStyle = COLORS[colorIdx]; c.lineCap = c.lineJoin = 'round';
@@ -193,41 +207,47 @@
     c.fill();
   }
   function stampAt(x, y) {
-    setup(pctx); var r = SIZES[sizeIdx] * 1.6;
-    (tool === 'star' ? star : heart)(pctx, x, y, r);
+    setup(dc); var r = SIZES[sizeIdx] * 1.6;
+    (tool === 'star' ? star : heart)(dc, x, y, r);
   }
   function chalkAt(x, y) {
-    setup(pctx); var s = SIZES[sizeIdx] * 1.1;
+    setup(dc); var s = SIZES[sizeIdx] * 1.1;
     for (var i = 0; i < 7; i++) {
       var a = Math.random() * 6.283, d = Math.random() * s * 0.55;
-      pctx.globalAlpha = 0.5 + Math.random() * 0.5;
-      pctx.beginPath(); pctx.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, 1 + Math.random() * 2.4, 0, 6.283); pctx.fill();
+      dc.globalAlpha = 0.5 + Math.random() * 0.5;
+      dc.beginPath(); dc.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, 1 + Math.random() * 2.4, 0, 6.283); dc.fill();
     }
-    pctx.globalAlpha = 1;
+    dc.globalAlpha = 1;
   }
 
   var drawing = false, lx = 0, ly = 0, mx = 0, my = 0, sx = 0, sy = 0, hue = 0;
   function beginStroke(p) {
     snapshot(); drawing = true;
     lx = mx = sx = p[0]; ly = my = sy = p[1]; hue = Math.random() * 360;
+    // modo colorir: o pincel só pinta dentro do espaço onde o dedo encostou primeiro
+    clipOn = (mode === 'color' && !!labels && tool !== 'eraser');
+    if (clipOn) buildMask(regionAt(p[0], p[1]));
+    dc = (clipOn && tool !== 'marker') ? sctx : pctx;
     switch (tool) {
       case 'pencil': case 'eraser':
-        setup(pctx, tool === 'eraser' ? 'destination-out' : null);
-        pctx.beginPath(); pctx.arc(lx, ly, pctx.lineWidth / 2, 0, 6.283); pctx.fill(); break;
+        setup(dc, tool === 'eraser' ? 'destination-out' : null);
+        dc.beginPath(); dc.arc(lx, ly, dc.lineWidth / 2, 0, 6.283); dc.fill(); break;
       case 'marker':
         tctx.clearRect(0, 0, W, H); setup(tctx);
         tctx.beginPath(); tctx.arc(lx, ly, tctx.lineWidth / 2, 0, 6.283); tctx.fill(); break;
       case 'chalk': chalkAt(lx, ly); break;
       case 'rainbow':
-        setup(pctx); pctx.fillStyle = 'hsl(' + hue + ',95%,55%)';
-        pctx.beginPath(); pctx.arc(lx, ly, pctx.lineWidth / 2, 0, 6.283); pctx.fill(); break;
+        setup(dc); dc.fillStyle = 'hsl(' + hue + ',95%,55%)';
+        dc.beginPath(); dc.arc(lx, ly, dc.lineWidth / 2, 0, 6.283); dc.fill(); break;
       default: stampAt(lx, ly); snd.stamp();
     }
+    flushClip(lx, ly, lx, ly);
   }
   function strokeTo(x, y) {
+    var ox = lx, oy = ly;
     switch (tool) {
       case 'pencil': case 'eraser': case 'marker':
-        var c = tool === 'marker' ? tctx : pctx;
+        var c = tool === 'marker' ? tctx : dc;
         setup(c, tool === 'eraser' ? 'destination-out' : null);
         var cx = (lx + x) / 2, cy = (ly + y) / 2;
         c.beginPath(); c.moveTo(mx, my); c.quadraticCurveTo(lx, ly, cx, cy); c.stroke();
@@ -238,28 +258,30 @@
         break;
       case 'rainbow':
         var dd = Math.hypot(x - lx, y - ly); hue = (hue + dd * 0.8) % 360;
-        setup(pctx); pctx.strokeStyle = 'hsl(' + hue + ',95%,55%)';
-        pctx.beginPath(); pctx.moveTo(lx, ly); pctx.lineTo(x, y); pctx.stroke(); break;
+        setup(dc); dc.strokeStyle = 'hsl(' + hue + ',95%,55%)';
+        dc.beginPath(); dc.moveTo(lx, ly); dc.lineTo(x, y); dc.stroke(); break;
       default:
         if (Math.hypot(x - sx, y - sy) >= SIZES[sizeIdx] * 2.6) { stampAt(x, y); sx = x; sy = y; snd.stamp(); }
     }
+    flushClip(ox, oy, x, y);
     lx = x; ly = y;
   }
   function endStroke() {
     if (!drawing) return; drawing = false;
     if (tool === 'pencil' || tool === 'eraser' || tool === 'marker') {
-      var c = tool === 'marker' ? tctx : pctx;
+      var c = tool === 'marker' ? tctx : dc;
       setup(c, tool === 'eraser' ? 'destination-out' : null);
       c.beginPath(); c.moveTo(mx, my); c.lineTo(lx, ly); c.stroke();
+      flushClip(mx, my, lx, ly);
     }
     if (tool === 'marker') {
       pctx.globalCompositeOperation = 'source-over'; pctx.globalAlpha = 0.55; pctx.drawImage(tmp, 0, 0); pctx.globalAlpha = 1;
       tctx.clearRect(0, 0, W, H);
     }
-    pctx.globalCompositeOperation = 'source-over'; pctx.globalAlpha = 1;
+    pctx.globalCompositeOperation = 'source-over'; pctx.globalAlpha = 1; sctx.globalAlpha = 1; clipOn = false;
   }
   function cancelStroke() {
-    if (!drawing) return; drawing = false; tctx.clearRect(0, 0, W, H);
+    if (!drawing) return; drawing = false; clipOn = false; tctx.clearRect(0, 0, W, H); sctx.clearRect(0, 0, W, H);
     var s = undoStack.pop(); if (s) pctx.putImageData(s, 0, 0);
     pctx.globalCompositeOperation = 'source-over'; pctx.globalAlpha = 1; refreshUI();
   }
@@ -357,10 +379,58 @@
     return true;
   }
 
+  /* ---------- espaços da página (para o pincel não vazar) ---------- */
+  function labelRegions(la) {
+    var lab = new Int32Array(W * H), id = 0, stack = [], N = W * H;
+    for (var s = 0; s < N; s++) {
+      if (lab[s] || la[s] > THRESH) continue;
+      id++; stack.length = 0; stack.push(s);
+      while (stack.length) {
+        var p = stack.pop();
+        if (lab[p] || la[p] > THRESH) continue;
+        var row = p - (p % W), px = p - row, l = px, r = px;
+        while (l > 0 && !lab[row + l - 1] && la[row + l - 1] <= THRESH) l--;
+        while (r < W - 1 && !lab[row + r + 1] && la[row + r + 1] <= THRESH) r++;
+        for (var i = l; i <= r; i++) lab[row + i] = id;
+        for (var d = -1; d <= 1; d += 2) {
+          var nr = row + d * W; if (nr < 0 || nr >= N) continue;
+          var inSpan = false;
+          for (var j = l; j <= r; j++) {
+            var blk = lab[nr + j] || la[nr + j] > THRESH;
+            if (!blk && !inSpan) { stack.push(nr + j); inSpan = true; } else if (blk) inSpan = false;
+          }
+        }
+      }
+    }
+    return lab;
+  }
+  function regionAt(x, y) {
+    x = Math.max(0, Math.min(W - 1, Math.round(x))); y = Math.max(0, Math.min(H - 1, Math.round(y)));
+    if (labels[y * W + x]) return labels[y * W + x];
+    for (var rad = 1; rad <= 14; rad++)
+      for (var dy = -rad; dy <= rad; dy++)
+        for (var dx = -rad; dx <= rad; dx++) {
+          var nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+          if (labels[ny * W + nx]) return labels[ny * W + nx];
+        }
+    return 0;
+  }
+  function buildMask(id) {
+    if (!maskImg) maskImg = mctx.createImageData(W, H);
+    var d = maskImg.data, lab = labels; d.fill(0);
+    if (id) for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      var i = y * W + x, v = lab[i];
+      if (v === id) d[i * 4 + 3] = 255;
+      else if (v === 0 && ((x >= 3 && lab[i - 3] === id) || (x < W - 3 && lab[i + 3] === id) || (y >= 3 && lab[i - 3 * W] === id) || (y < H - 3 && lab[i + 3 * W] === id))) d[i * 4 + 3] = 255;
+    }
+    mctx.putImageData(maskImg, 0, 0);
+  }
+
   /* ---------- páginas ---------- */
   function svgUrl(svg) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
   function setLines(page, done) {
-    lctx.clearRect(0, 0, W, H);
+    lctx.clearRect(0, 0, W, H); labels = null;
     if (!page) { lineAlpha = null; done && done(); return; }
     var img = new Image(), w = W, h = H;
     img.onload = function () {
@@ -371,7 +441,7 @@
       var pk = Math.min(W / 400, H / 300), pw = 400 * pk, ph = 300 * pk; c.drawImage(img, (W - pw) / 2, (H - ph) / 2, pw, ph);
       var src = c.getImageData(0, 0, W, H).data, out = lctx.createImageData(W, H), a = new Uint8Array(W * H);
       for (var i = 0, n = W * H; i < n; i++) { var v = 255 - src[i * 4]; a[i] = v; out.data[i * 4 + 3] = v; }
-      lctx.putImageData(out, 0, 0); lineAlpha = a; done && done();
+      lctx.putImageData(out, 0, 0); lineAlpha = a; labels = labelRegions(a); done && done();
     };
     img.src = svgUrl(page.svg);
   }
