@@ -17,7 +17,6 @@
   var current = 'home';
   function show(name) {
     current = name; for (var k in screens) screens[k].hidden = (k !== name);
-    $('handle').hidden = !$('bar').classList.contains('off') || name !== 'editor';
     if (name === 'editor') fit();
   }
 
@@ -61,7 +60,6 @@
   /* ---------- ícones SVG de tela cheia ---------- */
   var ICON_FULL = '<svg viewBox="0 0 24 24" fill="none" stroke="#1b3a63" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
   var ICON_EXIT = '<svg viewBox="0 0 24 24" fill="none" stroke="#1b3a63" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
-  $('bHide').textContent = LAYOUT === 'b' ? '◀️' : '🔽';
 
   /* ---------- paleta ---------- */
   var swWrap = $('swatches');
@@ -99,7 +97,7 @@
   /* ---------- tela cheia e barra de ferramentas ---------- */
   var pseudoFull = false;
   function fsOn() { return !!(document.fullscreenElement || document.webkitFullscreenElement) || pseudoFull; }
-  function setBar(hidden) { $('bar').classList.toggle('off', hidden); $('handle').hidden = !hidden || current !== 'editor'; }
+  function setBar() {}   // as ferramentas ficam sempre visíveis (quem usa é a criança)
   function toggleFull() {
     var de = document.documentElement, rq = de.requestFullscreen || de.webkitRequestFullscreen;
     if (fsOn()) {
@@ -122,8 +120,6 @@
   document.addEventListener('webkitfullscreenchange', onFsChange);
   $('bFull').addEventListener('click', function () { snd.tap(); toggleFull(); });
   $('hFull').addEventListener('click', function () { snd.tap(); toggleFull(); });
-  $('bHide').addEventListener('click', function () { snd.tap(); setBar(true); });
-  $('handle').addEventListener('click', function () { snd.tap(); setBar(false); });
 
   /* ---------- tamanho do desenho (ocupa o máximo da tela) ---------- */
   var zs = 1, zx = 0, zy = 0;
