@@ -15,7 +15,11 @@
   function $(id) { return document.getElementById(id); }
   var screens = { home: $('home'), gallery: $('gallery'), editor: $('editor') };
   var current = 'home';
-  function show(name) { current = name; for (var k in screens) screens[k].hidden = (k !== name); if (name === 'editor') fit(); }
+  function show(name) {
+    current = name; for (var k in screens) screens[k].hidden = (k !== name);
+    $('handle').hidden = !$('bar').classList.contains('off') || name !== 'editor';
+    if (name === 'editor') fit();
+  }
 
   var paint = $('paint'), tmp = $('tmp'), lines = $('lines'), stage = $('stage'), area = $('area');
   var pctx = paint.getContext('2d', { willReadFrequently: true });

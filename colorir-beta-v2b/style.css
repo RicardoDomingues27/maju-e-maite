@@ -72,7 +72,7 @@ html, body {
 #tmp { pointer-events: none; opacity: .55; }
 
 .bar { flex: none; background: rgba(255,255,255,.9); box-shadow: 0 0 10px rgba(0,0,0,.15); z-index: 3; }
-.bar.off { display: none; }
+.bar.off { display: none !important; }
 .strip {
   display: flex; gap: 8px; padding: 7px; align-items: center;
   overflow-x: auto; overflow-y: hidden; touch-action: pan-x; -webkit-overflow-scrolling: touch; scrollbar-width: none;
@@ -89,10 +89,10 @@ html, body {
 }
 .sw.on { transform: scale(1.12); border-color: #222; box-shadow: 0 0 0 3px #fff, 0 3px 0 3px rgba(0,0,0,.2); }
 
-.handle { position: absolute; z-index: 5; opacity: .85; background: #fff; }
+.handle { position: absolute; z-index: 5; background: var(--azul); border-color: #fff; box-shadow: 0 0 0 3px rgba(0,0,0,.25), 0 4px 10px rgba(0,0,0,.3); width: 72px; height: 72px; font-size: 38px; }
 
 /* versão A: faixa embaixo */
-[data-layout="a"] .handle { right: max(10px, env(safe-area-inset-right)); bottom: max(10px, env(safe-area-inset-bottom)); }
+[data-layout="a"] .handle { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); }
 
 /* versão B: faixa vertical fina na lateral */
 [data-layout="b"] #editor { flex-direction: row-reverse; }
